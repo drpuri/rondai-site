@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rondai — Technology that works for clinicians, not the other way around</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-bg: #FAFAF7;
+            --color-bg-warm: #F3F1EC;
+            --color-bg-dark: #1A1A1A;
+            --color-text: #1A1A1A;
+            --color-text-secondary: #5A5A52;
+            --color-text-light: #8A8A82;
+            --color-text-on-dark: #FAFAF7;
+            --color-accent: #2D5A3D;
+            --color-accent-light: #3A7A52;
+            --color-accent-subtle: #E8F0EB;
+            --color-border: #E0DED8;
+            --color-border-light: #ECEAE4;
+            --font-display: 'DM Serif Display', Georgia, serif;
+            --font-body: 'DM Sans', -apple-system, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── Nav ── */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 1.25rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(250, 250, 247, 0.9);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--color-border-light);
+            transition: all 0.3s ease;
+        }
+
+        .nav-logo {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            color: var(--color-text);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+        }
+
+        .nav-links a {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--color-text);
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--color-accent);
+            color: #FFFFFF !important;
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-accent-light);
+            color: #FFFFFF !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(45, 90, 61, 0.2);
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            color: var(--color-accent);
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: 1.5px solid var(--color-accent);
+            border-radius: 6px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-accent-subtle);
+        }
+
+        /* ── Sections ── */
+        section {
+            padding: 7rem 2rem;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .container-narrow {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .section-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--color-accent);
+            margin-bottom: 1.5rem;
+        }
+
+        /* ── Hero ── */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-top: 5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            right: -10%;
+            width: 60%;
+            height: 70%;
+            background: radial-gradient(ellipse, rgba(45, 90, 61, 0.06) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 800px;
+        }
+
+        .hero h1 {
+            font-family: var(--font-display);
+            font-size: clamp(2.8rem, 5.5vw, 4.2rem);
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            color: var(--color-text);
+            margin-bottom: 1.5rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            line-height: 1.7;
+            color: var(--color-text-secondary);
+            max-width: 600px;
+            margin-bottom: 2.5rem;
+        }
+
+        .hero-cta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .hero-scroll-indicator {
+            position: absolute;
+            bottom: 2.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--color-text-light);
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            animation: subtleBounce 2.5s ease-in-out infinite;
+        }
+
+        .scroll-line {
+            width: 1px;
+            height: 32px;
+            background: linear-gradient(to bottom, var(--color-text-light), transparent);
+        }
+
+        @keyframes subtleBounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(6px); }
+        }
+
+        /* ── Problem Section ── */
+        .problem-section {
+            background: var(--color-bg-warm);
+            border-top: 1px solid var(--color-border-light);
+            border-bottom: 1px solid var(--color-border-light);
+        }
+
+        .problem-section h2 {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 3.5vw, 2.8rem);
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+            margin-bottom: 2rem;
+        }
+
+        .problem-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--color-text-secondary);
+            max-width: 680px;
+        }
+
+        .problem-text p {
+            margin-bottom: 1.5rem;
+        }
+
+        /* ── Quotes ── */
+        .quotes-section {
+            background: var(--color-bg);
+        }
+
+        .quotes-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2.5rem;
+            margin-top: 3rem;
+        }
+
+        .quote-card {
+            padding: 2.5rem;
+            background: white;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .quote-card::before {
+            content: '"';
+            font-family: var(--font-display);
+            font-size: 4rem;
+            color: var(--color-accent);
+            opacity: 0.2;
+            position: absolute;
+            top: 0.75rem;
+            left: 1.5rem;
+            line-height: 1;
+        }
+
+        .quote-text {
+            font-size: 1.15rem;
+            line-height: 1.7;
+            color: var(--color-text);
+            font-style: italic;
+            position: relative;
+            z-index: 1;
+        }
+
+        .quote-attr {
+            margin-top: 1.25rem;
+            font-size: 0.85rem;
+            color: var(--color-text-light);
+            font-weight: 500;
+        }
+
+        /* ── How It Works ── */
+        .how-section {
+            background: var(--color-bg-warm);
+            border-top: 1px solid var(--color-border-light);
+            border-bottom: 1px solid var(--color-border-light);
+        }
+
+        .how-section h2 {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 3.5vw, 2.8rem);
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+        }
+
+        .how-subtitle {
+            font-size: 1.1rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 3.5rem;
+            max-width: 600px;
+        }
+
+        .how-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .how-card {
+            padding: 2rem;
+            background: var(--color-bg);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            transition: all 0.25s ease;
+        }
+
+        .how-card:hover {
+            border-color: var(--color-accent);
+            box-shadow: 0 4px 20px rgba(45, 90, 61, 0.08);
+        }
+
+        .how-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background: var(--color-accent);
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 50%;
+            margin-bottom: 1.25rem;
+        }
+
+        .how-card h3 {
+            font-family: var(--font-body);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--color-text);
+        }
+
+        .how-card p {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: var(--color-text-secondary);
+        }
+
+        /* ── Differentiators ── */
+        .diff-section {
+            background: var(--color-bg);
+        }
+
+        .diff-section h2 {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 3.5vw, 2.8rem);
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+            margin-bottom: 3.5rem;
+        }
+
+        .diff-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .diff-card {
+            padding: 2.5rem;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            background: white;
+        }
+
+        .diff-card h3 {
+            font-family: var(--font-body);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--color-text);
+        }
+
+        .diff-card p {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: var(--color-text-secondary);
+        }
+
+        .diff-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--color-accent-subtle);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.25rem;
+        }
+
+        .diff-icon svg {
+            width: 22px;
+            height: 22px;
+            stroke: var(--color-accent);
+            fill: none;
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* ── Scenario ── */
+        .scenario-section {
+            background: var(--color-bg-dark);
+            color: var(--color-text-on-dark);
+        }
+
+        .scenario-section h2 {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 3.5vw, 2.8rem);
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+        }
+
+        .scenario-subtitle {
+            font-size: 1.1rem;
+            color: rgba(250, 250, 247, 0.6);
+            margin-bottom: 3rem;
+            max-width: 600px;
+        }
+
+        .scenario-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            position: relative;
+            max-width: 640px;
+        }
+
+        .scenario-timeline::before {
+            content: '';
+            position: absolute;
+            top: 24px;
+            left: 17px;
+            bottom: 24px;
+            width: 1px;
+            background: rgba(250, 250, 247, 0.15);
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 1.5rem;
+            padding: 1.25rem 0;
+            position: relative;
+        }
+
+        .timeline-dot {
+            width: 36px;
+            height: 36px;
+            min-width: 36px;
+            border-radius: 50%;
+            background: rgba(250, 250, 247, 0.1);
+            border: 1px solid rgba(250, 250, 247, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+        }
+
+        .timeline-dot svg {
+            width: 16px;
+            height: 16px;
+            stroke: var(--color-accent-light);
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .timeline-time {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--color-accent-light);
+            margin-bottom: 0.35rem;
+            letter-spacing: 0.03em;
+        }
+
+        .timeline-text {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: rgba(250, 250, 247, 0.8);
+        }
+
+        /* ── About / Founder ── */
+        .about-section {
+            background: var(--color-bg-warm);
+            border-top: 1px solid var(--color-border-light);
+            border-bottom: 1px solid var(--color-border-light);
+        }
+
+        .about-section h2 {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 3.5vw, 2.8rem);
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+            margin-bottom: 2rem;
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 3rem;
+            align-items: start;
+        }
+
+        .about-photo {
+            width: 100%;
+            aspect-ratio: 1;
+            background: var(--color-border);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-text-light);
+            font-size: 0.85rem;
+        }
+
+        .about-bio h3 {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .about-title {
+            font-size: 0.95rem;
+            color: var(--color-accent);
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+        }
+
+        .about-bio p {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--color-text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        /* ── CTA ── */
+        .cta-section {
+            background: var(--color-bg);
+            text-align: center;
+            padding: 6rem 2rem;
+        }
+
+        .cta-section h2 {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 3.5vw, 2.8rem);
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            font-size: 1.1rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 2.5rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ── Footer ── */
+        footer {
+            padding: 3rem 2rem;
+            border-top: 1px solid var(--color-border-light);
+            background: var(--color-bg);
+        }
+
+        .footer-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-logo {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            color: var(--color-text);
+        }
+
+        .footer-text {
+            font-size: 0.85rem;
+            color: var(--color-text-light);
+        }
+
+        /* ── Animations ── */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ── Mobile ── */
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem 1.25rem;
+            }
+
+            .nav-links a:not(.btn-primary) {
+                display: none;
+            }
+
+            section {
+                padding: 4.5rem 1.25rem;
+            }
+
+            .hero {
+                min-height: 90vh;
+                padding-top: 4rem;
+            }
+
+            .hero-scroll-indicator {
+                display: none;
+            }
+
+            .quotes-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .how-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .diff-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+
+            .about-photo {
+                max-width: 200px;
+            }
+
+            .hero-cta {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Nav -->
+    <nav>
+        <a href="#" class="nav-logo">Rondai</a>
+        <div class="nav-links">
+            <a href="#problem">Problem</a>
+            <a href="#how">How it works</a>
+            <a href="#about">About</a>
+            <a href="#book" class="btn-primary">Book a call</a>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>The assistant that learns how you work — and never leaves.</h1>
+                <p>Rondai — or "Ronda" as we like to call her — prepares things for you the way you like, tracks what's pending throughout your day, learns how you work, and follows up before you have to remember. No new EHR. No dashboard. Just the coordination layer that should have existed all along.</p>
+                <div class="hero-cta">
+                    <a href="#book" class="btn-primary">Book a call →</a>
+                    <a href="#problem" class="btn-secondary">Learn more</a>
+                </div>
+            </div>
+        </div>
+        <div class="hero-scroll-indicator">
+            <span>Scroll</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- Problem -->
+    <section class="problem-section" id="problem">
+        <div class="container">
+            <div class="fade-in">
+                <p class="section-label">The Problem</p>
+                <h2>Technology should work for clinicians —<br>not the other way around.</h2>
+                <div class="problem-text">
+                    <p>You round at one facility Monday, another Tuesday, a third Wednesday. Between buildings, you're tracking pending orders, prior auths, family callbacks, and follow-ups — pulling information out of the EMR and organizing it your own way.</p>
+                    <p>Everyone does it a little differently. Different information, different structure, different order. You've spent years building a personalized system to make sure nothing slips through the cracks.</p>
+                    <p>That system lives in your head, on paper, in spreadsheets. It's manual, it's personal, and nothing in healthcare is designed to support it. The tools exist — but they're not built around how you actually work, and they don't remember your preferences.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quotes -->
+    <section class="quotes-section">
+        <div class="container">
+            <div class="fade-in">
+                <p class="section-label">From Clinicians</p>
+                <h2 style="font-family: var(--font-display); font-size: clamp(2rem, 3.5vw, 2.8rem); line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 0.5rem;">We asked what makes a great medical assistant.</h2>
+                <p style="font-size: 1.1rem; color: var(--color-text-secondary);">Everyone said the same thing differently.</p>
+                <div class="quotes-grid">
+                    <div class="quote-card">
+                        <p class="quote-text">I want someone who gets up before I do to make sure everything's ready, and stays after I'm done to make sure nothing got missed.</p>
+                        <p class="quote-attr">— Clinician</p>
+                    </div>
+                    <div class="quote-card">
+                        <p class="quote-text">I want them to remember the way I like to do things.</p>
+                        <p class="quote-attr">— Clinician</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-section" id="how">
+        <div class="container">
+            <div class="fade-in">
+                <p class="section-label">How Rondai Works</p>
+                <h2>You talk to it like a person.<br>It remembers like one too.</h2>
+                <p class="how-subtitle">No EHR integration required. Ronda learns from you — and gets smarter the longer you use her.</p>
+                <div class="how-grid">
+                    <div class="how-card">
+                        <div class="how-number">1</div>
+                        <h3>Tell it what's happening</h3>
+                        <p>After rounds, tell Rondai what you ordered, what's pending, who needs a callback. Like texting an MA — in your own words, your own format.</p>
+                    </div>
+                    <div class="how-card">
+                        <div class="how-number">2</div>
+                        <h3>It tracks across facilities</h3>
+                        <p>Monday's order at one facility becomes Wednesday's follow-up at another. Rondai connects what's pending across every building so you don't have to.</p>
+                    </div>
+                    <div class="how-card">
+                        <div class="how-number">3</div>
+                        <h3>It learns how you work</h3>
+                        <p>Your preferences at each facility. Which prior auths you always approve. How you like your morning brief. Over time, Rondai stops asking things it already knows.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scenario -->
+    <section class="scenario-section">
+        <div class="container">
+            <div class="fade-in">
+                <p class="section-label" style="color: var(--color-accent-light);">A Day With Rondai</p>
+                <h2>Tuesday morning, before rounds.</h2>
+                <p class="scenario-subtitle">Your phone buzzes. Rondai already knows what you need.</p>
+                <div class="scenario-timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-dot">
+                            <svg viewBox="0 0 24 24"><path d="M12 2L12 22M2 12L22 12" stroke-width="1.5"/></svg>
+                        </div>
+                        <div>
+                            <p class="timeline-time">6:30 AM</p>
+                            <p class="timeline-text">Mrs. Chen, Room 14 — CMP results should be back from Monday's order. Cardiology note still outstanding. Daughter called Monday about the medication change, hasn't heard back.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/></svg>
+                        </div>
+                        <div>
+                            <p class="timeline-time">6:31 AM</p>
+                            <p class="timeline-text">Mr. Rodriguez, Room 8 — Aetna prior auth for Eliquis expires Friday. Based on your history, Rondai has drafted the renewal. Approve or review?</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot">
+                            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                        </div>
+                        <div>
+                            <p class="timeline-time">6:32 AM</p>
+                            <p class="timeline-text">You reply: "Approve Eliquis. Remind me to call Chen's daughter after 4pm." Done. You walk in already knowing everything.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Differentiators -->
+    <section class="diff-section">
+        <div class="container">
+            <div class="fade-in">
+                <p class="section-label">What Makes Rondai Different</p>
+                <h2>Not another tool. A memory that<br>works the way you do.</h2>
+                <div class="diff-grid">
+                    <div class="diff-card">
+                        <div class="diff-icon">
+                            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 12l3 3 5-5"/></svg>
+                        </div>
+                        <h3>Cross-facility continuity</h3>
+                        <p>Rondai maintains one picture of what's pending across every building you cover. Monday's order at one facility connects to Wednesday's follow-up at another automatically.</p>
+                    </div>
+                    <div class="diff-card">
+                        <div class="diff-icon">
+                            <svg viewBox="0 0 24 24"><path d="M20 7h-4V3"/><path d="M14 3v4a1 1 0 001 1h4"/><path d="M4 12V4a2 2 0 012-2h8l6 6v12a2 2 0 01-2 2H6a2 2 0 01-2-2v-4"/><path d="M2 15h10"/><path d="M9 18l3-3-3-3"/></svg>
+                        </div>
+                        <h3>Preference learning</h3>
+                        <p>After a few weeks, Rondai knows you want potassium before adjusting Lasix, that you auto-approve certain prior auths, and that you call families after 4pm. It stops asking what it already knows.</p>
+                    </div>
+                    <div class="diff-card">
+                        <div class="diff-icon">
+                            <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                        </div>
+                        <h3>Portable</h3>
+                        <p>Rondai is yours — not your group's, not the facility's. If you leave, every preference, every workflow, every pattern it's learned comes with you. Two years of accumulated knowledge, portable for the first time.</p>
+                    </div>
+                    <div class="diff-card">
+                        <div class="diff-icon">
+                            <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                        </div>
+                        <h3>No new system to learn</h3>
+                        <p>Interact with Rondai like you'd text a person. In your own words, your own shorthand. No training required, no workflow disruption, no IT department involved.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Roadmap -->
+    <section style="background: var(--color-bg-warm); border-top: 1px solid var(--color-border-light); border-bottom: 1px solid var(--color-border-light); padding: 7rem 2rem;">
+        <div class="container">
+            <div class="fade-in">
+                <p class="section-label">What's Next</p>
+                <h2 style="font-family: var(--font-display); font-size: clamp(2rem, 3.5vw, 2.8rem); line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 3.5rem;">Ronda gets smarter over time.<br>So does the platform.</h2>
+                <div class="how-grid">
+                    <div class="how-card">
+                        <div class="how-number" style="background: var(--color-accent);">1</div>
+                        <h3>Today</h3>
+                        <p>Cross-facility task tracking, preference learning, proactive follow-ups, and coordination — all driven by you, in your own words.</p>
+                    </div>
+                    <div class="how-card" style="opacity: 0.85;">
+                        <div class="how-number" style="background: var(--color-text-light);">2</div>
+                        <h3>EMR Integration</h3>
+                        <p>Direct connection to your EHR so Ronda can pull results, flag new notes, and surface what's changed — without you having to tell her.</p>
+                    </div>
+                    <div class="how-card" style="opacity: 0.7;">
+                        <div class="how-number" style="background: var(--color-text-light);">3</div>
+                        <h3>Intelligent Scribe</h3>
+                        <p>Note-taking that understands your style. Ronda drafts documentation the way you write it — learning your voice, your format, your preferences over time.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- HIPAA Compliance -->
+    <section style="background: var(--color-bg); padding: 4rem 2rem; text-align: center;">
+        <div class="container">
+            <div class="fade-in" style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+                <div style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem 2rem; border: 1px solid var(--color-border); border-radius: 8px; background: white;">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        <path d="M9 12l2 2 4-4"/>
+                    </svg>
+                    <span style="font-weight: 600; font-size: 1rem; color: var(--color-text);">HIPAA Compliant</span>
+                </div>
+                <p style="font-size: 0.9rem; color: var(--color-text-light); max-width: 460px;">Patient data security is foundational, not an afterthought. Rondai is built with HIPAA compliance from the ground up.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Opportunity -->
+    <section style="background: var(--color-bg-dark); color: var(--color-text-on-dark); padding: 6rem 2rem;">
+        <div class="container">
+            <div class="fade-in">
+                <p class="section-label" style="color: var(--color-accent-light);">The Opportunity</p>
+                <h2 style="font-family: var(--font-display); font-size: clamp(2rem, 3.5vw, 2.8rem); line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 2rem; color: var(--color-text-on-dark);">The most valuable data in healthcare<br>isn't being captured.</h2>
+                <div style="max-width: 640px;">
+                    <p style="font-size: 1.1rem; line-height: 1.8; color: rgba(250, 250, 247, 0.7); margin-bottom: 1.25rem;">Every system in healthcare records what happened to the patient. Nothing records how the clinician works — their preferences, their patterns, their decision-making shortcuts across facilities.</p>
+                    <p style="font-size: 1.1rem; line-height: 1.8; color: rgba(250, 250, 247, 0.7);">Rondai captures that layer. Every interaction makes it smarter — not just for one clinician, but across the patterns of how clinicians work. That's a dataset that doesn't exist anywhere else.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About -->
+    <section class="about-section" id="about">
+        <div class="container">
+            <div class="fade-in">
+                <p class="section-label">Who's Building This</p>
+                <h2 style="font-family: var(--font-display); font-size: clamp(2rem, 3.5vw, 2.8rem); line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 2rem;">Built by clinicians who've<br>lived this problem.</h2>
+                <div class="problem-text">
+                    <p>Rondai is built by clinicians and operators who've spent years inside senior living and skilled nursing — rounding across facilities, managing fragmented workflows, and watching great clinicians lose time to coordination work that no system was designed to handle.</p>
+                    <p>We're not building from the outside looking in. We've carried the paper lists, rebuilt the tracking systems after staff turnover, and felt the weight of holding five buildings in our heads. That's why we're building this — and why we're building it with clinicians, not for them.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section" id="book">
+        <div class="container">
+            <div class="fade-in">
+                <h2>Help us build the right thing.</h2>
+                <p>We're looking for busy clinicians who want to shape what Rondai becomes. 20 minutes of your time. No pitch, just a conversation.</p>
+                <a href="#" class="btn-primary" style="font-size: 1rem; padding: 1rem 2rem;">Book a call →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content" style="flex-direction: column; gap: 1.5rem; align-items: center; text-align: center;">
+            <span class="footer-logo">Rondai</span>
+            <p style="font-size: 0.9rem; color: var(--color-text-secondary);">Interested in partnering or investing? <a href="mailto:tim@rondai.com" style="color: var(--color-accent); text-decoration: underline;">Get in touch</a></p>
+            <span class="footer-text">© 2026 Rondai Health</span>
+        </div>
+    </footer>
+
+    <script>
+        // Intersection Observer for fade-in animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.15,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // Smooth scroll for nav links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
