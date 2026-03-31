@@ -1085,22 +1085,25 @@
             btn.disabled = true;
             btn.style.opacity = '0.7';
 
-            fetch('https://formsubmit.co/ajax/tim@ronda.health', {
+            fetch('https://api.web3forms.com/submit', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json'
                 },
                 body: JSON.stringify({
+                    access_key: '6462a3c1-de86-4f2d-bbb9-88ca4c776c28',
                     name: name,
                     email: email,
                     phone: phone || 'Not provided',
                     role: role || 'Not provided',
-                    _subject: 'New Ronda waitlist signup: ' + name
+                    subject: 'New Ronda waitlist signup: ' + name,
+                    from_name: 'Ronda Waitlist'
                 })
             })
-            .then(response => {
-                if (response.ok) {
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
                     document.getElementById('waitlist-form').style.display = 'none';
                     document.getElementById('waitlist-success').style.display = 'block';
                 } else {
