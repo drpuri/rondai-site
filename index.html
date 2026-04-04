@@ -596,7 +596,19 @@
         /* ── Mobile ── */
         @media (max-width: 768px) {
             nav { padding: 1rem 1.25rem; }
+            .nav-links { gap: 0.75rem; }
             .nav-links a:not(.btn-primary):not(.nav-demo) { display: none; }
+            .nav-demo {
+                font-size: 0.75rem;
+                padding: 0.35rem 0.6rem;
+                border-width: 1px;
+                border-radius: 6px;
+            }
+            .btn-primary {
+                font-size: 0.75rem;
+                padding: 0.45rem 0.85rem;
+                border-radius: 6px;
+            }
             section { padding: 4rem 1.25rem; }
 
             .hero { min-height: auto; padding-top: 6rem; padding-bottom: 3rem; }
