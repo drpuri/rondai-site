@@ -1,973 +1,886 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ronda Health — Clinical Coordination for Multi-Facility Clinicians</title>
-    <meta name="description" content="Your AI clinical coordinator — describe what you need, she runs it. Built for post-acute and geriatric physicians who round across multiple facilities. No new EHR. No dashboard.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --color-bg: #FAFAF7;
-            --color-bg-warm: #F3F1EC;
-            --color-bg-dark: #1A1A1A;
-            --color-text: #1A1A1A;
-            --color-text-secondary: #5A5A52;
-            --color-text-light: #8A8A82;
-            --color-text-on-dark: #FAFAF7;
-            --color-accent: #2D5A3D;
-            --color-accent-light: #3A7A52;
-            --color-accent-subtle: #E8F0EB;
-            --color-border: #E0DED8;
-            --color-border-light: #ECEAE4;
-            --font-display: 'DM Serif Display', Georgia, serif;
-            --font-body: 'DM Sans', -apple-system, sans-serif;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; font-size: 16px; }
-
-        body {
-            font-family: var(--font-body);
-            background: var(--color-bg);
-            color: var(--color-text);
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* ── Nav ── */
-        nav {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            z-index: 100;
-            padding: 1.25rem 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: rgba(250, 250, 247, 0.9);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--color-border-light);
-        }
-
-        .nav-logo {
-            font-family: var(--font-body);
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--color-text);
-            text-decoration: none;
-            letter-spacing: -0.02em;
-        }
-
-        .nav-logo span { color: var(--color-accent); }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 2.5rem;
-        }
-
-        .nav-links a {
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: var(--color-text-secondary);
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-
-        .nav-links a:hover { color: var(--color-text); }
-
-        .nav-demo {
-            border: 1.5px solid var(--color-accent);
-            color: var(--color-accent) !important;
-            padding: 0.55rem 1.15rem;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: background 0.2s, color 0.2s;
-        }
-
-        .nav-demo:hover {
-            background: var(--color-accent);
-            color: #FFFFFF !important;
-        }
-
-        .btn-primary {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1.5rem;
-            background: var(--color-accent);
-            color: #FFFFFF !important;
-            font-family: var(--font-body);
-            font-size: 0.9rem;
-            font-weight: 500;
-            border: none;
-            border-radius: 6px;
-            text-decoration: none;
-            cursor: pointer;
-            transition: all 0.25s ease;
-        }
-
-        .btn-primary:hover {
-            background: var(--color-accent-light);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 16px rgba(45, 90, 61, 0.2);
-        }
-
-        .btn-secondary {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1.5rem;
-            background: transparent;
-            color: var(--color-accent);
-            font-family: var(--font-body);
-            font-size: 0.9rem;
-            font-weight: 500;
-            border: 1.5px solid var(--color-accent);
-            border-radius: 6px;
-            text-decoration: none;
-            cursor: pointer;
-            transition: all 0.25s ease;
-        }
-
-        .btn-secondary:hover { background: var(--color-accent-subtle); }
-
-        /* ── Sections ── */
-        section { padding: 6rem 2rem; }
-        .container { max-width: 1100px; margin: 0 auto; }
-
-        .section-label {
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--color-accent);
-            margin-bottom: 1.5rem;
-        }
-
-        /* ── Hero ── */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            padding-top: 5rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: -20%; right: -10%;
-            width: 60%; height: 70%;
-            background: radial-gradient(ellipse, rgba(45, 90, 61, 0.06) 0%, transparent 70%);
-            pointer-events: none;
-        }
-
-        .hero-grid {
-            display: grid;
-            grid-template-columns: 1.1fr 0.9fr;
-            gap: 3.5rem;
-            align-items: center;
-        }
-
-        .hero-content { max-width: 560px; }
-
-        .hero h1 {
-            font-family: var(--font-display);
-            font-size: clamp(2.4rem, 4.5vw, 3.2rem);
-            line-height: 1.15;
-            letter-spacing: -0.02em;
-            color: var(--color-text);
-            margin-bottom: 1.25rem;
-        }
-
-        .hero h1 em {
-            font-style: normal;
-            color: var(--color-accent);
-        }
-
-        .hero-content > p {
-            font-size: 1.1rem;
-            line-height: 1.7;
-            color: var(--color-text-secondary);
-            margin-bottom: 2rem;
-            max-width: 500px;
-        }
-
-        .hero-cta {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        /* ── Chat Mockup ── */
-        .chat-mockup {
-            background: white;
-            border: 1px solid var(--color-border);
-            border-radius: 14px;
-            padding: 1.25rem;
-            box-shadow: 0 8px 40px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
-            max-width: 380px;
-            justify-self: end;
-        }
-
-        .chat-hdr {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            padding-bottom: 0.875rem;
-            border-bottom: 1px solid var(--color-border-light);
-            margin-bottom: 0.875rem;
-        }
-
-        .chat-av {
-            width: 30px; height: 30px;
-            border-radius: 50%;
-            background: var(--color-accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-weight: 700;
-            font-size: 13px;
-        }
-
-        .chat-nm { font-weight: 600; font-size: 0.85rem; }
-        .chat-st { font-size: 0.7rem; color: var(--color-accent); margin-left: auto; }
-
-        .cb {
-            margin-bottom: 0.65rem;
-            max-width: 90%;
-            opacity: 0;
-            transform: translateY(8px);
-            animation: chatIn 0.4s ease forwards;
-        }
-
-        .cb:nth-child(1) { animation-delay: 0.2s; }
-        .cb:nth-child(2) { animation-delay: 0.5s; }
-        .cb:nth-child(3) { animation-delay: 0.9s; }
-        .cb:nth-child(4) { animation-delay: 1.2s; }
-        .cb:last-child { margin-bottom: 0; }
-
-        .cb.u { margin-left: auto; }
-
-        .cb-lbl {
-            font-size: 0.6rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: var(--color-text-light);
-            margin-bottom: 0.2rem;
-        }
-
-        .cb.u .cb-lbl { text-align: right; }
-
-        .cb-msg {
-            padding: 0.6rem 0.8rem;
-            border-radius: 10px;
-            font-size: 0.8rem;
-            line-height: 1.5;
-        }
-
-        .cb.u .cb-msg {
-            background: var(--color-accent-subtle);
-            border-bottom-right-radius: 3px;
-        }
-
-        .cb.r .cb-msg {
-            background: white;
-            border: 1px solid var(--color-border);
-            border-bottom-left-radius: 3px;
-        }
-
-        @keyframes chatIn {
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* ── Problem ── */
-        .problem-section {
-            background: var(--color-bg-warm);
-            border-top: 1px solid var(--color-border-light);
-            border-bottom: 1px solid var(--color-border-light);
-        }
-
-        .problem-section h2 {
-            font-family: var(--font-display);
-            font-size: clamp(2rem, 3.5vw, 2.8rem);
-            line-height: 1.2;
-            letter-spacing: -0.02em;
-            margin-bottom: 2rem;
-        }
-
-        .problem-grid {
-            display: grid;
-            grid-template-columns: 1.2fr 1fr;
-            gap: 3rem;
-            align-items: start;
-        }
-
-        .problem-text {
-            font-size: 1.05rem;
-            line-height: 1.8;
-            color: var(--color-text-secondary);
-        }
-
-        .problem-text p { margin-bottom: 1.25rem; }
-        .problem-text p:last-child { margin-bottom: 0; }
-
-        .quote-card {
-            padding: 2rem;
-            background: white;
-            border: 1px solid var(--color-border);
-            border-radius: 8px;
-            position: relative;
-        }
-
-        .quote-card::before {
-            content: '"';
-            font-family: var(--font-display);
-            font-size: 4rem;
-            color: var(--color-accent);
-            opacity: 0.2;
-            position: absolute;
-            top: 0.5rem; left: 1.25rem;
-            line-height: 1;
-        }
-
-        .quote-text {
-            font-size: 1.1rem;
-            line-height: 1.7;
-            color: var(--color-text);
-            font-style: italic;
-            position: relative;
-            z-index: 1;
-        }
-
-        .quote-attr {
-            margin-top: 1rem;
-            font-size: 0.85rem;
-            color: var(--color-text-light);
-            font-weight: 500;
-        }
-
-        /* ── How It Works ── */
-        .how-section { background: var(--color-bg); }
-
-        .how-section h2 {
-            font-family: var(--font-display);
-            font-size: clamp(2rem, 3.5vw, 2.8rem);
-            line-height: 1.2;
-            letter-spacing: -0.02em;
-            margin-bottom: 1rem;
-        }
-
-        .how-subtitle {
-            font-size: 1.05rem;
-            color: var(--color-text-secondary);
-            margin-bottom: 3rem;
-            max-width: 600px;
-        }
-
-        .how-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-        }
-
-        .how-card {
-            padding: 2rem;
-            background: white;
-            border: 1px solid var(--color-border);
-            border-radius: 8px;
-            transition: all 0.25s ease;
-        }
-
-        .how-card:hover {
-            border-color: var(--color-accent);
-            box-shadow: 0 4px 20px rgba(45, 90, 61, 0.08);
-        }
-
-        .how-number {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 36px; height: 36px;
-            background: var(--color-accent);
-            color: white;
-            font-size: 0.85rem;
-            font-weight: 600;
-            border-radius: 50%;
-            margin-bottom: 1.25rem;
-        }
-
-        .how-card h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.75rem; }
-        .how-card p { font-size: 0.95rem; line-height: 1.7; color: var(--color-text-secondary); }
-
-        /* ── Differentiators ── */
-        .diff-section {
-            background: var(--color-bg-warm);
-            border-top: 1px solid var(--color-border-light);
-            border-bottom: 1px solid var(--color-border-light);
-        }
-
-        .diff-section h2 {
-            font-family: var(--font-display);
-            font-size: clamp(2rem, 3.5vw, 2.8rem);
-            line-height: 1.2;
-            letter-spacing: -0.02em;
-            margin-bottom: 3rem;
-        }
-
-        .diff-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
-
-        .diff-card {
-            padding: 2rem;
-            border: 1px solid var(--color-border);
-            border-radius: 8px;
-            background: white;
-        }
-
-        .diff-icon {
-            width: 44px; height: 44px;
-            background: var(--color-accent-subtle);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1.25rem;
-        }
-
-        .diff-icon svg {
-            width: 22px; height: 22px;
-            stroke: var(--color-accent);
-            fill: none;
-            stroke-width: 1.5;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-
-        .diff-card h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.5rem; }
-        .diff-card p { font-size: 0.95rem; line-height: 1.7; color: var(--color-text-secondary); }
-
-        /* ── Accordion ── */
-        .accordion-wrap {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 0 2rem 4rem;
-        }
-
-        .accordion {
-            background: white;
-            border: 1px solid var(--color-border);
-            border-radius: 8px;
-            overflow: hidden;
-            margin-bottom: 0.75rem;
-        }
-
-        .acc-btn {
-            width: 100%;
-            background: none;
-            border: none;
-            padding: 1.2rem 1.75rem;
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            font-family: var(--font-body);
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--color-text);
-            transition: background 0.15s;
-            gap: 0.75rem;
-        }
-
-        .acc-btn:hover { background: var(--color-bg); }
-
-        .acc-btn .pill {
-            font-size: 0.65rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: var(--color-accent);
-            background: var(--color-accent-subtle);
-            padding: 0.2rem 0.6rem;
-            border-radius: 20px;
-        }
-
-        .acc-btn .chev {
-            margin-left: auto;
-            width: 18px; height: 18px;
-            transition: transform 0.25s ease;
-            color: var(--color-text-light);
-            flex-shrink: 0;
-        }
-
-        .accordion.open .chev { transform: rotate(180deg); }
-
-        .acc-body {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.35s ease;
-        }
-
-        .accordion.open .acc-body { max-height: 600px; }
-
-        .acc-inner { padding: 0 1.75rem 1.5rem; }
-        .acc-inner p { font-size: 0.95rem; color: var(--color-text-secondary); line-height: 1.7; margin-bottom: 0.75rem; }
-        .acc-inner p:last-child { margin-bottom: 0; }
-
-        .rm-row { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1rem; }
-        .rm-row:last-child { margin-bottom: 0; }
-        .rm-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--color-accent); margin-top: 6px; flex-shrink: 0; }
-        .rm-dot.pl { background: var(--color-border); }
-        .rm-row h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.15rem; }
-        .rm-row p { margin-bottom: 0 !important; font-size: 0.9rem !important; }
-
-        .sec-row { display: flex; gap: 2rem; flex-wrap: wrap; }
-        .sec-item { display: flex; align-items: center; gap: 0.6rem; }
-        .sec-item svg { width: 18px; height: 18px; stroke: var(--color-accent); fill: none; stroke-width: 2; flex-shrink: 0; }
-        .sec-item span { font-size: 0.9rem; color: var(--color-text-secondary); }
-
-        /* ── About ── */
-        .about-section { background: var(--color-bg); }
-        .about-section h2 {
-            font-family: var(--font-display);
-            font-size: clamp(2rem, 3.5vw, 2.8rem);
-            line-height: 1.2;
-            letter-spacing: -0.02em;
-            margin-bottom: 1.5rem;
-        }
-
-        /* ── CTA ── */
-        .cta-section {
-            background: var(--color-bg-warm);
-            border-top: 1px solid var(--color-border-light);
-            text-align: center;
-            padding: 5rem 2rem;
-        }
-
-        .cta-section h2 {
-            font-family: var(--font-display);
-            font-size: clamp(2rem, 3.5vw, 2.8rem);
-            line-height: 1.2;
-            letter-spacing: -0.02em;
-            margin-bottom: 1rem;
-        }
-
-        /* ── Footer ── */
-        footer {
-            padding: 2.5rem 2rem;
-            border-top: 1px solid var(--color-border-light);
-            background: var(--color-bg);
-        }
-
-        .footer-content {
-            max-width: 1100px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            align-items: center;
-            text-align: center;
-        }
-
-        .footer-logo {
-            font-family: var(--font-body);
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--color-text);
-        }
-
-        .footer-logo span { color: var(--color-accent); }
-        .footer-text { font-size: 0.85rem; color: var(--color-text-light); }
-
-        /* ── Animations ── */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.7s ease, transform 0.7s ease;
-        }
-
-        .fade-in.visible { opacity: 1; transform: translateY(0); }
-
-        /* ── Mobile ── */
-        @media (max-width: 768px) {
-            nav { padding: 1rem 1.25rem; }
-            .nav-links { gap: 0.75rem; }
-            .nav-links a:not(.btn-primary):not(.nav-demo) { display: none; }
-            .nav-demo {
-                font-size: 0.75rem;
-                padding: 0.35rem 0.6rem;
-                border-width: 1px;
-                border-radius: 6px;
-            }
-            .btn-primary {
-                font-size: 0.75rem;
-                padding: 0.45rem 0.85rem;
-                border-radius: 6px;
-            }
-            section { padding: 4rem 1.25rem; }
-
-            .hero { min-height: auto; padding-top: 6rem; padding-bottom: 3rem; }
-            .hero-grid { grid-template-columns: 1fr; gap: 2.5rem; }
-            .hero h1 { font-size: 2rem; }
-            .hero-cta { flex-direction: column; align-items: flex-start; }
-            .chat-mockup { max-width: 100%; justify-self: center; }
-
-            .problem-grid { grid-template-columns: 1fr; gap: 2rem; }
-            .how-grid { grid-template-columns: 1fr; }
-            .diff-grid { grid-template-columns: 1fr; }
-            .accordion-wrap { padding: 0 1.25rem 3rem; }
-            .sec-row { flex-direction: column; gap: 1rem; }
-        }
-
-        @media (max-width: 480px) {
-            .hero h1 { font-size: 1.75rem; }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ronda Health — Rounding Prep, Scheduling & Coordination for Multi-Facility Physicians</title>
+  <meta name="description" content="Ronda preps your rounds before you walk in the door — tracking overnight events, new admits, and pending follow-ups across every facility you cover. She coordinates scheduling with families, caregivers, and covering physicians so your day isn't spent on phone tag between buildings.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-bg: #FAFAF7;
+      --color-bg-warm: #F3F1EC;
+      --color-bg-dark: #1A1A1A;
+      --color-text: #1A1A1A;
+      --color-text-secondary: #5A5A52;
+      --color-text-light: #8A8A82;
+      --color-text-on-dark: #FAFAF7;
+      --color-accent: #2D5A3D;
+      --color-accent-light: #3A7A52;
+      --color-accent-subtle: #E8F0EB;
+      --color-border: #E0DED8;
+      --color-border-light: #ECEAE4;
+      --font-display: 'DM Serif Display', Georgia, serif;
+      --font-body: 'DM Sans', -apple-system, sans-serif;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      font-family: var(--font-body);
+      background: var(--color-bg);
+      color: var(--color-text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.25rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(250, 250, 247, 0.9);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--color-border-light);
+    }
+    .nav-logo {
+      font-family: var(--font-body);
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--color-text);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    .nav-logo span { color: var(--color-accent); }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+    }
+    .nav-links a {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--color-text-secondary);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--color-text); }
+    .nav-demo {
+      border: 1.5px solid var(--color-accent);
+      color: var(--color-accent) !important;
+      padding: 0.55rem 1.15rem;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: background 0.2s, color 0.2s;
+    }
+    .nav-demo:hover {
+      background: var(--color-accent);
+      color: #FFFFFF !important;
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      background: var(--color-accent);
+      color: #FFFFFF !important;
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      font-weight: 500;
+      border: none;
+      border-radius: 6px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    .btn-primary:hover {
+      background: var(--color-accent-light);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(45, 90, 61, 0.2);
+    }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      background: transparent;
+      color: var(--color-accent);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      font-weight: 500;
+      border: 1.5px solid var(--color-accent);
+      border-radius: 6px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    .btn-secondary:hover { background: var(--color-accent-subtle); }
+
+    /* ── Sections ── */
+    section { padding: 6rem 2rem; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--color-accent);
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -20%; right: -10%;
+      width: 60%; height: 70%;
+      background: radial-gradient(ellipse, rgba(45, 90, 61, 0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 3.5rem;
+      align-items: center;
+    }
+    .hero-content { max-width: 560px; }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 4.5vw, 3.2rem);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--color-text);
+      margin-bottom: 1.25rem;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--color-accent);
+    }
+    .hero-content > p {
+      font-size: 1.1rem;
+      line-height: 1.7;
+      color: var(--color-text-secondary);
+      margin-bottom: 2rem;
+      max-width: 500px;
+    }
+    .hero-cta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    /* ── Chat Mockup ── */
+    .chat-mockup {
+      background: white;
+      border: 1px solid var(--color-border);
+      border-radius: 14px;
+      padding: 1.25rem;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+      max-width: 380px;
+      justify-self: end;
+    }
+    .chat-hdr {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding-bottom: 0.875rem;
+      border-bottom: 1px solid var(--color-border-light);
+      margin-bottom: 0.875rem;
+    }
+    .chat-av {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      background: var(--color-accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 13px;
+    }
+    .chat-nm { font-weight: 600; font-size: 0.85rem; }
+    .chat-st { font-size: 0.7rem; color: var(--color-accent); margin-left: auto; }
+    .cb {
+      margin-bottom: 0.65rem;
+      max-width: 90%;
+      opacity: 0;
+      transform: translateY(8px);
+      animation: chatIn 0.4s ease forwards;
+    }
+    .cb:nth-child(1) { animation-delay: 0.2s; }
+    .cb:nth-child(2) { animation-delay: 0.5s; }
+    .cb:nth-child(3) { animation-delay: 0.9s; }
+    .cb:nth-child(4) { animation-delay: 1.2s; }
+    .cb:last-child { margin-bottom: 0; }
+    .cb.u { margin-left: auto; }
+    .cb-lbl {
+      font-size: 0.6rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--color-text-light);
+      margin-bottom: 0.2rem;
+    }
+    .cb.u .cb-lbl { text-align: right; }
+    .cb-msg {
+      padding: 0.6rem 0.8rem;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      line-height: 1.5;
+    }
+    .cb.u .cb-msg {
+      background: var(--color-accent-subtle);
+      border-bottom-right-radius: 3px;
+    }
+    .cb.r .cb-msg {
+      background: white;
+      border: 1px solid var(--color-border);
+      border-bottom-left-radius: 3px;
+    }
+    @keyframes chatIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Problem ── */
+    .problem-section {
+      background: var(--color-bg-warm);
+      border-top: 1px solid var(--color-border-light);
+      border-bottom: 1px solid var(--color-border-light);
+    }
+    .problem-section h2 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 3.5vw, 2.8rem);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 2rem;
+    }
+    .problem-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+    .problem-text {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: var(--color-text-secondary);
+    }
+    .problem-text p { margin-bottom: 1.25rem; }
+    .problem-text p:last-child { margin-bottom: 0; }
+    .quote-card {
+      padding: 2rem;
+      background: white;
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      position: relative;
+    }
+    .quote-card::before {
+      content: '\201C';
+      font-family: var(--font-display);
+      font-size: 4rem;
+      color: var(--color-accent);
+      opacity: 0.2;
+      position: absolute;
+      top: 0.5rem; left: 1.25rem;
+      line-height: 1;
+    }
+    .quote-text {
+      font-size: 1.1rem;
+      line-height: 1.7;
+      color: var(--color-text);
+      font-style: italic;
+      position: relative;
+      z-index: 1;
+    }
+    .quote-attr {
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      color: var(--color-text-light);
+      font-weight: 500;
+    }
+
+    /* ── How It Works ── */
+    .how-section { background: var(--color-bg); }
+    .how-section h2 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 3.5vw, 2.8rem);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
+    .how-subtitle {
+      font-size: 1.05rem;
+      color: var(--color-text-secondary);
+      margin-bottom: 3rem;
+      max-width: 600px;
+    }
+    .how-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+    }
+    .how-card {
+      padding: 2rem;
+      background: white;
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      transition: all 0.25s ease;
+    }
+    .how-card:hover {
+      border-color: var(--color-accent);
+      box-shadow: 0 4px 20px rgba(45, 90, 61, 0.08);
+    }
+    .how-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px; height: 36px;
+      background: var(--color-accent);
+      color: white;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 50%;
+      margin-bottom: 1.25rem;
+    }
+    .how-card h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.75rem; }
+    .how-card p { font-size: 0.95rem; line-height: 1.7; color: var(--color-text-secondary); }
+
+    /* ── Differentiators ── */
+    .diff-section {
+      background: var(--color-bg-warm);
+      border-top: 1px solid var(--color-border-light);
+      border-bottom: 1px solid var(--color-border-light);
+    }
+    .diff-section h2 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 3.5vw, 2.8rem);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 3rem;
+    }
+    .diff-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+    .diff-card {
+      padding: 2rem;
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      background: white;
+    }
+    .diff-icon {
+      width: 44px; height: 44px;
+      background: var(--color-accent-subtle);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+    }
+    .diff-icon svg {
+      width: 22px; height: 22px;
+      stroke: var(--color-accent);
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .diff-card h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .diff-card p { font-size: 0.95rem; line-height: 1.7; color: var(--color-text-secondary); }
+
+    /* ── Accordion ── */
+    .accordion-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem 4rem;
+    }
+    .accordion {
+      background: white;
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 0.75rem;
+    }
+    .acc-btn {
+      width: 100%;
+      background: none;
+      border: none;
+      padding: 1.2rem 1.75rem;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--color-text);
+      transition: background 0.15s;
+      gap: 0.75rem;
+    }
+    .acc-btn:hover { background: var(--color-bg); }
+    .acc-btn .pill {
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--color-accent);
+      background: var(--color-accent-subtle);
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+    }
+    .acc-btn .chev {
+      margin-left: auto;
+      width: 18px; height: 18px;
+      transition: transform 0.25s ease;
+      color: var(--color-text-light);
+      flex-shrink: 0;
+    }
+    .accordion.open .chev { transform: rotate(180deg); }
+    .acc-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease;
+    }
+    .accordion.open .acc-body { max-height: 600px; }
+    .acc-inner { padding: 0 1.75rem 1.5rem; }
+    .acc-inner p { font-size: 0.95rem; color: var(--color-text-secondary); line-height: 1.7; margin-bottom: 0.75rem; }
+    .acc-inner p:last-child { margin-bottom: 0; }
+    .rm-row { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1rem; }
+    .rm-row:last-child { margin-bottom: 0; }
+    .rm-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--color-accent); margin-top: 6px; flex-shrink: 0; }
+    .rm-dot.pl { background: var(--color-border); }
+    .rm-row h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.15rem; }
+    .rm-row p { margin-bottom: 0 !important; font-size: 0.9rem !important; }
+    .sec-row { display: flex; gap: 2rem; flex-wrap: wrap; }
+    .sec-item { display: flex; align-items: center; gap: 0.6rem; }
+    .sec-item svg { width: 18px; height: 18px; stroke: var(--color-accent); fill: none; stroke-width: 2; flex-shrink: 0; }
+    .sec-item span { font-size: 0.9rem; color: var(--color-text-secondary); }
+
+    /* ── About ── */
+    .about-section { background: var(--color-bg); }
+    .about-section h2 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 3.5vw, 2.8rem);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── CTA ── */
+    .cta-section {
+      background: var(--color-bg-warm);
+      border-top: 1px solid var(--color-border-light);
+      text-align: center;
+      padding: 5rem 2rem;
+    }
+    .cta-section h2 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 3.5vw, 2.8rem);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
+
+    /* ── Footer ── */
+    footer {
+      padding: 2.5rem 2rem;
+      border-top: 1px solid var(--color-border-light);
+      background: var(--color-bg);
+    }
+    .footer-content {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      align-items: center;
+      text-align: center;
+    }
+    .footer-logo {
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--color-text);
+    }
+    .footer-logo span { color: var(--color-accent); }
+    .footer-text { font-size: 0.85rem; color: var(--color-text-light); }
+
+    /* ── Animations ── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── Mobile ── */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.25rem; }
+      .nav-links { gap: 0.75rem; }
+      .nav-links a:not(.btn-primary):not(.nav-demo) { display: none; }
+      .nav-demo {
+        font-size: 0.75rem;
+        padding: 0.35rem 0.6rem;
+        border-width: 1px;
+        border-radius: 6px;
+      }
+      .btn-primary {
+        font-size: 0.75rem;
+        padding: 0.45rem 0.85rem;
+        border-radius: 6px;
+      }
+      section { padding: 4rem 1.25rem; }
+      .hero { min-height: auto; padding-top: 6rem; padding-bottom: 3rem; }
+      .hero-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .hero h1 { font-size: 2rem; }
+      .hero-cta { flex-direction: column; align-items: flex-start; }
+      .chat-mockup { max-width: 100%; justify-self: center; }
+      .problem-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .how-grid { grid-template-columns: 1fr; }
+      .diff-grid { grid-template-columns: 1fr; }
+      .accordion-wrap { padding: 0 1.25rem 3rem; }
+      .sec-row { flex-direction: column; gap: 1rem; }
+    }
+    @media (max-width: 480px) {
+      .hero h1 { font-size: 1.75rem; }
+    }
+  </style>
 </head>
 <body>
 
-    <nav>
-        <a href="#" class="nav-logo" style="text-decoration:none;">ronda<span>.health</span></a>
-        <div class="nav-links">
-            <a href="#problem">Problem</a>
-            <a href="#how">How it works</a>
-            <a href="#about">About</a>
-            <a href="https://demo.ronda.health" target="_blank" rel="noopener" class="nav-demo">Try Demo</a>
-            <a href="#book" class="btn-primary">Get early access</a>
-        </div>
-    </nav>
-
-    <!-- Hero -->
-    <section class="hero">
-        <div class="container">
-            <div class="hero-grid">
-                <div class="hero-content">
-                    <h1>Your AI clinical coordinator — <em>describe what you need, Ronda handles the rest.</em></h1>
-                    <p>For physicians who round across multiple facilities and carry the coordination in their heads. Ronda handles the rest — prep, follow-ups, and coordination — without a new EHR or dashboard.</p><p style="margin-top: 1rem; font-size: 0.9rem; color: var(--color-text-secondary); font-style: italic;">Every system in healthcare records what happened to the patient. Nothing records how the clinician works.</p>
-                    <div class="hero-cta">
-                        <a href="#book" class="btn-primary">Get early access →</a>
-                        <a href="#problem" class="btn-secondary">Learn more</a>
-                    </div>
-                </div>
-
-                <div class="chat-mockup">
-                    <div class="chat-hdr">
-                        <div class="chat-av">R</div>
-                        <div class="chat-nm">Ronda</div>
-                        <div class="chat-st">● Active</div>
-                    </div>
-                    <div class="cb u">
-                        <div class="cb-lbl">You</div>
-                        <div class="cb-msg">Any new admits since yesterday?</div>
-                    </div>
-                    <div class="cb r">
-                        <div class="cb-lbl">Ronda</div>
-                        <div class="cb-msg">One new admit at Sunrise Gardens — Mr. Torres, Room 31, hip fracture repair. His prior auth for extended SNF stay is still pending. I've flagged it for your morning brief.</div>
-                    </div>
-                    <div class="cb u">
-                        <div class="cb-lbl">You</div>
-                        <div class="cb-msg">Set up a daily 6:30am brief for Sunrise Gardens.</div>
-                    </div>
-                    <div class="cb r">
-                        <div class="cb-lbl">Ronda</div>
-                        <div class="cb-msg">Done. Every morning at 6:30am I'll prep your Sunrise brief — new admits, overnight events, and anything that needs your attention before you arrive.</div>
-                    </div>
-                </div>
-                                </div>
-        </div>
-    </section>
-
-    <!-- Problem -->
-    <section class="problem-section" id="problem">
-        <div class="container">
-            <div class="fade-in">
-                <p class="section-label">The Problem</p>
-                <h2>Technology should work for clinicians —<br>not the other way around.</h2>
-                <div class="problem-grid">
-                    <div class="problem-text">
-                        <p>You're at the hospital in the morning, a clinic by lunch, rounding at a facility in the afternoon. Between locations, you're tracking pending orders, prior auths, family callbacks, and follow-ups — pulling from different EMRs and organizing it your own way.</p>
-                        <p>That system lives in your head, on paper, in spreadsheets. It's manual, it's personal, and nothing in healthcare is designed to support it. You already have a team — but no one person sees your whole day across every location. Ronda does.</p>
-                    </div>
-                    <div>
-                        <div class="quote-card">
-                            <p class="quote-text">I want someone who gets up before I do to make sure everything's ready, and stays after I'm done to make sure nothing got missed.</p>
-                            <p class="quote-attr">— Clinician</p>
-                        </div>
-                        <div class="quote-card" style="margin-top: 1.25rem;">
-                            <p class="quote-text">I want them to remember the way I like to do things.</p>
-                            <p class="quote-attr">— Clinician</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- How It Works -->
-    <section class="how-section" id="how">
-        <div class="container">
-            <div class="fade-in">
-                <p class="section-label">How Ronda Works</p>
-                <h2>You teach her your workflows.<br>She runs them.</h2>
-                <p class="how-subtitle">Ronda doesn't come pre-built for one way of working. You shape her by talking to her — and she turns what you say into skills she runs automatically.</p>
-                <div class="how-grid">
-                    <div class="how-card">
-                        <div class="how-number">1</div>
-                        <h3>Tell her how you work</h3>
-                        <p>"Every Monday before I round, check which patients have new lab results and list them by location." Ronda turns that into a workflow she runs every Monday — no code, no setup.</p>
-                    </div>
-                    <div class="how-card">
-                        <div class="how-number">2</div>
-                        <h3>Connect your tools</h3>
-                        <p>Link your email, calendar, EMR, and communication platforms to give Ronda more context. The more she sees, the more she can do on her own.</p>
-                    </div>
-                    <div class="how-card">
-                        <div class="how-number">3</div>
-                        <h3>She gets smarter over time</h3>
-                        <p>Every conversation teaches her something. Your preferences, your shortcuts, your patterns. Over time she stops asking and starts doing.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Differentiators -->
-    <section class="diff-section">
-        <div class="container">
-            <div class="fade-in">
-                <p class="section-label">What Makes Ronda Different</p>
-                <h2>Not another tool. A platform<br>you build on.</h2>
-                <div class="diff-grid">
-                    <div class="diff-card">
-                        <div class="diff-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 12l3 3 5-5"/></svg></div>
-                        <h3>Cross-location continuity</h3>
-                        <p>One picture of what's pending across every facility. Monday's order connects to Wednesday's follow-up at another location — automatically.</p>
-                    </div>
-                    <div class="diff-card">
-                        <div class="diff-icon"><svg viewBox="0 0 24 24"><path d="M20 7h-4V3"/><path d="M14 3v4a1 1 0 001 1h4"/><path d="M4 12V4a2 2 0 012-2h8l6 6v12a2 2 0 01-2 2H6a2 2 0 01-2-2v-4"/><path d="M2 15h10"/><path d="M9 18l3-3-3-3"/></svg></div>
-                        <h3>Your workflows, your skills</h3>
-                        <p>Describe how you want something done and Ronda turns it into a skill she runs automatically. Build features yourself, in plain English.</p>
-                    </div>
-                    <div class="diff-card">
-                        <div class="diff-icon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
-                        <h3>Portable</h3>
-                        <p>Ronda is yours — not your group's, not the facility's, not the EMR's. If you leave, everything comes with you: shortcuts, contacts, preferences, years of accumulated knowledge.</p>
-                    </div>
-                    <div class="diff-card">
-                        <div class="diff-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
-                        <h3>You control the intelligence</h3>
-                        <p>Your data, your memory, your skills — all on infrastructure you control. Ronda doesn't phone home. No vendor decides what she can do.</p>
-                    </div>
-                    <div class="diff-card">
-                        <div class="diff-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg></div>
-                        <h3>She calls them for you</h3>
-                        <p>Ronda places outbound AI voice calls to families, facilities, and pharmacies — confirming appointments, coordinating visits, relaying updates. No app needed on their end.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Collapsible sections -->
-    <div class="accordion-wrap">
-        <p class="section-label" style="margin-bottom: 1rem;">More Details</p>
-
-        <div class="accordion" id="acc-roadmap">
-            <button class="acc-btn" onclick="toggleAcc('acc-roadmap')">
-                <span>What's Next — Roadmap</span>
-                <svg class="chev" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
-            </button>
-            <div class="acc-body">
-                <div class="acc-inner">
-                    <div class="rm-row">
-                        <div class="rm-dot"></div>
-                        <div><h4>Today</h4><p>Cross-facility task tracking, preference learning, proactive follow-ups, and coordination — all driven by you, in your own words.</p></div>
-                    </div>
-                    <div class="rm-row">
-                        <div class="rm-dot"></div>
-                        <div><h4>AI Voice Calling</h4><p>Ronda places outbound calls to families, facilities, and pharmacies — coordinating visits, confirming appointments, relaying updates. No app needed on their end.</p></div>
-                    </div>
-                    <div class="rm-row">
-                        <div class="rm-dot pl"></div>
-                        <div><h4>EMR Integration</h4><p>Direct connection to your EHR so Ronda can pull results, flag new notes, and surface what's changed.</p></div>
-                    </div>
-                    <div class="rm-row">
-                        <div class="rm-dot pl"></div>
-                        <div><h4>Intelligent Scribe</h4><p>Note-taking that understands your style. Ronda drafts documentation the way you write it — learning your voice, your format, your preferences.</p></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="accordion" id="acc-security">
-            <button class="acc-btn" onclick="toggleAcc('acc-security')">
-                <span>Security & Data</span>
-                <svg class="chev" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
-            </button>
-            <div class="acc-body">
-                <div class="acc-inner">
-                    <div class="sec-row">
-                        <div class="sec-item">
-                            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                            <span>HIPAA compliant from the ground up</span>
-                        </div>
-                        <div class="sec-item">
-                            <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-                            <span>Never shared, sold, or used to train models</span>
-                        </div>
-                        <div class="sec-item">
-                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-                            <span>You own your data — delete or export anytime</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="accordion" id="acc-opp">
-            <button class="acc-btn" onclick="toggleAcc('acc-opp')">
-                <span>The Opportunity</span>
-                <span class="pill">Investors</span>
-                <svg class="chev" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
-            </button>
-            <div class="acc-body">
-                <div class="acc-inner">
-                    <p>Every system in healthcare records what happened to the patient. Nothing records how the clinician works — their preferences, their patterns, their decision-making shortcuts across locations.</p>
-                    <p>Ronda captures that layer. Every workflow a clinician builds, every skill they teach her, every preference she learns — it compounds. Not just for one clinician, but across the patterns of how clinicians work.</p>
-                    <p>That's a library of clinician-built healthcare workflow automations that doesn't exist anywhere else.</p>
-                    <p style="margin-top: 0.5rem;"><a href="mailto:tim@ronda.health" style="color: var(--color-accent); font-weight: 600; text-decoration: none;">Get in touch →</a></p>
-                </div>
-            </div>
-        </div>
+  <nav>
+    <a href="#" class="nav-logo" style="text-decoration:none;">ronda<span>.health</span></a>
+    <div class="nav-links">
+      <a href="#problem">Problem</a>
+      <a href="#how">How it works</a>
+      <a href="#about">About</a>
+      <a href="https://demo.ronda.health" target="_blank" rel="noopener" class="nav-demo">Try Demo</a>
+      <a href="#book" class="btn-primary">Get early access</a>
     </div>
+  </nav>
 
-    <!-- About -->
-    <section class="about-section" id="about">
-        <div class="container">
-            <div class="fade-in">
-                <p class="section-label">Who's Building This</p>
-                <h2>Built by clinicians who've<br>lived this problem.</h2>
-                <div class="problem-text" style="max-width: 680px;">
-                    <p>Ronda is built by clinicians and operators who've spent years inside senior living and skilled nursing — rounding across facilities, managing fragmented workflows, and watching great clinicians lose time to coordination work that no system was designed to handle.</p>
-                    <p>We're not building from the outside looking in. We've carried the paper lists, rebuilt the tracking systems after staff turnover, and felt the weight of holding five buildings in our heads. That's why we're building this — and why we're building it with clinicians, not for them.</p>
-                </div>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-grid">
+        <div class="hero-content">
+          <h1>Your rounds are prepped <em>before you walk in the door.</em></h1>
+          <p>Ronda tracks overnight events, new admits, and pending follow-ups across every facility you cover. She coordinates scheduling with families, caregivers, and covering physicians — so your day isn't spent on phone tag between buildings.</p>
+          <div class="hero-cta">
+            <a href="#book" class="btn-primary">Get early access →</a>
+            <a href="#how" class="btn-secondary">See how it works</a>
+          </div>
+        </div>
+        <div class="chat-mockup">
+          <div class="chat-hdr">
+            <div class="chat-av">R</div>
+            <div class="chat-nm">Ronda</div>
+            <div class="chat-st">● 6:30 AM Brief</div>
+          </div>
+          <div class="cb r">
+            <div class="cb-lbl">Ronda</div>
+            <div class="cb-msg">Good morning. Here's your brief for Sunrise Gardens: 1 new admit overnight (Mr. Torres, Rm 31, hip fracture repair — prior auth still pending). Mrs. Chen's labs are back, potassium is low. No falls or ER sends.</div>
+          </div>
+          <div class="cb u">
+            <div class="cb-lbl">You</div>
+            <div class="cb-msg">Schedule a family meeting for Torres this week and remind me to recheck Chen's K+ Thursday.</div>
+          </div>
+          <div class="cb r">
+            <div class="cb-lbl">Ronda</div>
+            <div class="cb-msg">Done. I'll reach out to Torres's daughter to find a time. Chen's potassium recheck is on your Thursday rounding list at Sunrise.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Problem -->
+  <section class="problem-section" id="problem">
+    <div class="container">
+      <div class="fade-in">
+        <p class="section-label">The Problem</p>
+        <h2>You round at four facilities.<br>You're the only one keeping track.</h2>
+        <div class="problem-grid">
+          <div class="problem-text">
+            <p>You're at the hospital in the morning, a SNF by lunch, another building in the afternoon. Between stops you're calling families back, chasing prior auths, checking if labs came in, and trying to remember what was pending from three days ago at a different facility.</p>
+            <p>You track it on paper, in spreadsheets, in your head. Staff turns over and the context disappears. Nobody at Building B knows what you ordered at Building A on Monday.</p>
+            <p>And the scheduling — care conferences, family callbacks, coordinating with covering physicians when you're off — is pure phone tag. It fills the gaps in your day that should be spent on patients.</p>
+          </div>
+          <div>
+            <div class="quote-card">
+              <p class="quote-text">I want someone who gets up before I do to make sure everything's ready, and stays after I'm done to make sure nothing got missed.</p>
+              <p class="quote-attr">— Clinician</p>
             </div>
-        </div>
-    </section>
-
-    <!-- CTA / Waitlist -->
-    <section class="cta-section" id="book">
-        <div class="container" style="max-width: 520px;">
-            <div class="fade-in">
-                <h2>Get early access.</h2>
-                <p style="font-size: 1.05rem; color: var(--color-text-secondary); margin-bottom: 2.5rem;">We're looking for busy clinicians who want to shape what Ronda becomes. Leave your info and we'll reach out to learn more about how you work.</p>
-                
-                <div id="waitlist-form" style="text-align: left;">
-                    <div style="margin-bottom: 1.25rem;">
-                        <label style="display: block; font-size: 0.85rem; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 0.4rem;">Name <span style="color: var(--color-accent);">*</span></label>
-                        <input type="text" id="form-name" required style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--color-border); border-radius: 6px; font-family: var(--font-body); font-size: 0.95rem; background: white; color: var(--color-text); outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--color-accent)'" onblur="this.style.borderColor='var(--color-border)'" />
-                    </div>
-                    <div style="margin-bottom: 1.25rem;">
-                        <label style="display: block; font-size: 0.85rem; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 0.4rem;">Email <span style="color: var(--color-accent);">*</span></label>
-                        <input type="email" id="form-email" required style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--color-border); border-radius: 6px; font-family: var(--font-body); font-size: 0.95rem; background: white; color: var(--color-text); outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--color-accent)'" onblur="this.style.borderColor='var(--color-border)'" />
-                    </div>
-                    <div style="margin-bottom: 1.25rem;">
-                        <label style="display: block; font-size: 0.85rem; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 0.4rem;">Phone <span style="font-weight: 400; color: var(--color-text-light);">(optional)</span></label>
-                        <input type="tel" id="form-phone" style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--color-border); border-radius: 6px; font-family: var(--font-body); font-size: 0.95rem; background: white; color: var(--color-text); outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--color-accent)'" onblur="this.style.borderColor='var(--color-border)'" />
-                    </div>
-                    <div style="margin-bottom: 2rem;">
-                        <label style="display: block; font-size: 0.85rem; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 0.4rem;">Role / Title <span style="font-weight: 400; color: var(--color-text-light);">(optional)</span></label>
-                        <input type="text" id="form-role" placeholder="e.g. Geriatrician, NP, Medical Director" style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--color-border); border-radius: 6px; font-family: var(--font-body); font-size: 0.95rem; background: white; color: var(--color-text); outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--color-accent)'" onblur="this.style.borderColor='var(--color-border)'" />
-                    </div>
-                    <button onclick="submitForm()" class="btn-primary" style="width: 100%; justify-content: center; font-size: 1rem; padding: 1rem 2rem;">Join the waitlist</button>
-                    <p style="text-align: center; font-size: 0.8rem; color: var(--color-text-light); margin-top: 0.75rem;">We'll reach out to learn more about how you work.</p>
-                </div>
-                
-                <div id="waitlist-success" style="display: none; text-align: center; padding: 2rem 0;">
-                    <div style="width: 56px; height: 56px; background: var(--color-accent-subtle); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem;">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                    </div>
-                    <h3 style="font-family: var(--font-display); font-size: 1.5rem; margin-bottom: 0.5rem;">You're on the list.</h3>
-                    <p style="color: var(--color-text-secondary);">We'll be in touch soon.</p>
-                </div>
+            <div class="quote-card" style="margin-top: 1.25rem;">
+              <p class="quote-text">I want them to remember the way I like to do things.</p>
+              <p class="quote-attr">— Clinician</p>
             </div>
+          </div>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <footer>
-        <div class="footer-content">
-            <span class="footer-logo">ronda<span>.health</span></span>
-            <p style="font-size: 0.9rem; color: var(--color-text-secondary);">Interested in partnering or investing? <a href="mailto:tim@ronda.health" style="color: var(--color-accent); text-decoration: underline;">Get in touch</a></p>
-            <span class="footer-text">© 2026 Ronda Health</span>
+  <!-- How It Works -->
+  <section class="how-section" id="how">
+    <div class="container">
+      <div class="fade-in">
+        <p class="section-label">How Ronda Works</p>
+        <h2>Your morning starts with answers,<br>not questions.</h2>
+        <p class="how-subtitle">Here's what a day with Ronda looks like — from before you leave the house to after your last stop.</p>
+        <div class="how-grid">
+          <div class="how-card">
+            <div class="how-number">1</div>
+            <h3>Morning brief</h3>
+            <p>Before you leave the house, Ronda sends what happened overnight at each facility: new admits, falls, ER sends, medication changes. Organized by where you're going first.</p>
+          </div>
+          <div class="how-card">
+            <div class="how-number">2</div>
+            <h3>Rounding list</h3>
+            <p>At each stop, your list is ready — patients who need attention, sorted by acuity. Pending orders, recent labs, and what you asked to follow up on from your last visit are already pulled together.</p>
+          </div>
+          <div class="how-card">
+            <div class="how-number">3</div>
+            <h3>Scheduling & coordination</h3>
+            <p>Ronda handles the back-and-forth: booking care conferences with families, confirming coverage with other physicians, relaying updates to facility staff. No phone tag.</p>
+          </div>
+          <div class="how-card">
+            <div class="how-number">4</div>
+            <h3>Nothing falls through</h3>
+            <p>After rounds, Ronda tracks what's still open. Orders placed, callbacks owed, follow-ups due next visit. It carries across facilities and across days — so when you walk into Building C on Thursday, you know what's pending from Monday.</p>
+          </div>
         </div>
-    </footer>
+      </div>
+    </div>
+  </section>
 
-    <script>
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
-        }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
-        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  <!-- Differentiators -->
+  <section class="diff-section">
+    <div class="container">
+      <div class="fade-in">
+        <p class="section-label">Why Ronda</p>
+        <h2>Built for how you actually work.</h2>
+        <div class="diff-grid">
+          <div class="diff-card">
+            <div class="diff-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 12l3 3 5-5"/></svg></div>
+            <h3>Cross-location continuity</h3>
+            <p>One picture of what's pending across every facility. Monday's order connects to Wednesday's follow-up at another location — automatically.</p>
+          </div>
+          <div class="diff-card">
+            <div class="diff-icon"><svg viewBox="0 0 24 24"><path d="M20 7h-4V3"/><path d="M14 3v4a1 1 0 001 1h4"/><path d="M4 12V4a2 2 0 012-2h8l6 6v12a2 2 0 01-2 2H6a2 2 0 01-2-2v-4"/><path d="M2 15h10"/><path d="M9 18l3-3-3-3"/></svg></div>
+            <h3>She learns your way</h3>
+            <p>Tell Ronda how you like things done — which patients to flag first, how to structure your list, when to send reminders. She remembers and applies it every day.</p>
+          </div>
+          <div class="diff-card">
+            <div class="diff-icon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
+            <h3>Portable</h3>
+            <p>Ronda is yours — not your group's, not the facility's, not the EMR's. If you change jobs, everything comes with you.</p>
+          </div>
+          <div class="diff-card">
+            <div class="diff-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg></div>
+            <h3>She calls them for you</h3>
+            <p>Ronda places outbound calls to families, facilities, and pharmacies — confirming appointments, coordinating visits, relaying updates. No app needed on their end.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            });
-        });
+  <!-- Collapsible sections -->
+  <div class="accordion-wrap">
+    <p class="section-label" style="margin-bottom: 1rem;">More Details</p>
+    <div class="accordion" id="acc-roadmap">
+      <button class="acc-btn" onclick="toggleAcc('acc-roadmap')">
+        <span>What's Next — Roadmap</span>
+        <svg class="chev" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+      </button>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="rm-row">
+            <div class="rm-dot"></div>
+            <div><h4>Today</h4><p>Morning briefs, rounding list generation, scheduling coordination, and cross-facility follow-up tracking — all driven by you, in your own words.</p></div>
+          </div>
+          <div class="rm-row">
+            <div class="rm-dot"></div>
+            <div><h4>AI Voice Calling</h4><p>Ronda places outbound calls to families, facilities, and pharmacies — coordinating visits, confirming appointments, relaying updates. No app needed on their end.</p></div>
+          </div>
+          <div class="rm-row">
+            <div class="rm-dot pl"></div>
+            <div><h4>EMR Integration</h4><p>Direct connection to your EHR so Ronda can pull results, flag new notes, and surface what's changed since your last visit.</p></div>
+          </div>
+          <div class="rm-row">
+            <div class="rm-dot pl"></div>
+            <div><h4>Intelligent Scribe</h4><p>Note-taking that understands your style. Ronda drafts documentation the way you write it — learning your voice, your format, your preferences.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="accordion" id="acc-security">
+      <button class="acc-btn" onclick="toggleAcc('acc-security')">
+        <span>Security & Data</span>
+        <svg class="chev" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+      </button>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="sec-row">
+            <div class="sec-item">
+              <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <span>HIPAA compliant from the ground up</span>
+            </div>
+            <div class="sec-item">
+              <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+              <span>Never shared, sold, or used to train models</span>
+            </div>
+            <div class="sec-item">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              <span>You own your data — delete or export anytime</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="accordion" id="acc-opp">
+      <button class="acc-btn" onclick="toggleAcc('acc-opp')">
+        <span>The Opportunity</span>
+        <span class="pill">Investors</span>
+        <svg class="chev" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+      </button>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <p>Every system in healthcare records what happened to the patient. Nothing records how the clinician works — their preferences, their patterns, their decision-making shortcuts across locations.</p>
+          <p>Ronda captures that layer. Every workflow a clinician builds, every preference she learns — it compounds. Not just for one clinician, but across the patterns of how clinicians work.</p>
+          <p>That's a library of clinician-built healthcare workflow automations that doesn't exist anywhere else.</p>
+          <p style="margin-top: 0.5rem;"><a href="mailto:tim@ronda.health" style="color: var(--color-accent); font-weight: 600; text-decoration: none;">Get in touch →</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        function toggleAcc(id) { document.getElementById(id).classList.toggle('open'); }
+  <!-- About -->
+  <section class="about-section" id="about">
+    <div class="container">
+      <div class="fade-in">
+        <p class="section-label">Who's Building This</p>
+        <h2>Built by clinicians who've<br>lived this problem.</h2>
+        <div class="problem-text" style="max-width: 680px;">
+          <p>Ronda is built by clinicians and operators who've spent years inside senior living and skilled nursing — rounding across facilities, managing fragmented workflows, and watching great clinicians lose time to coordination work that no system was designed to handle.</p>
+          <p>We're not building from the outside looking in. We've carried the paper lists, rebuilt the tracking systems after staff turnover, and felt the weight of holding five buildings in our heads. That's why we're building this — and why we're building it with clinicians, not for them.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-        function submitForm() {
-            const name = document.getElementById('form-name').value.trim();
-            const email = document.getElementById('form-email').value.trim();
-            const phone = document.getElementById('form-phone').value.trim();
-            const role = document.getElementById('form-role').value.trim();
+  <!-- CTA / Waitlist -->
+  <section class="cta-section" id="book">
+    <div class="container" style="max-width: 520px;">
+      <div class="fade-in">
+        <h2>Get early access.</h2>
+        <p style="font-size: 1.05rem; color: var(--color-text-secondary); margin-bottom: 2.5rem;">We're looking for busy clinicians who want to shape what Ronda becomes. Leave your info and we'll reach out to learn more about how you work.</p>
+        <div id="waitlist-form" style="text-align: left;">
+          <div style="margin-bottom: 1.25rem;">
+            <label style="display: block; font-size: 0.85rem; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 0.4rem;">Name <span style="color: var(--color-accent);">*</span></label>
+            <input type="text" id="form-name" required style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--color-border); border-radius: 6px; font-family: var(--font-body); font-size: 0.95rem; background: white; color: var(--color-text); outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--color-accent)'" onblur="this.style.borderColor='var(--color-border)'" />
+          </div>
+          <div style="margin-bottom: 1.25rem;">
+            <label style="display: block; font-size: 0.85rem; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 0.4rem;">Email <span style="color: var(--color-accent);">*</span></label>
+            <input type="email" id="form-email" required style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--color-border); border-radius: 6px; font-family: var(--font-body); font-size: 0.95rem; background: white; color: var(--color-text); outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--color-accent)'" onblur="this.style.borderColor='var(--color-border)'" />
+          </div>
+          <div style="margin-bottom: 1.25rem;">
+            <label style="display: block; font-size: 0.85rem; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 0.4rem;">Phone <span style="font-weight: 400; color: var(--color-text-light);">(optional)</span></label>
+            <input type="tel" id="form-phone" style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--color-border); border-radius: 6px; font-family: var(--font-body); font-size: 0.95rem; background: white; color: var(--color-text); outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--color-accent)'" onblur="this.style.borderColor='var(--color-border)'" />
+          </div>
+          <div style="margin-bottom: 2rem;">
+            <label style="display: block; font-size: 0.85rem; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 0.4rem;">Role / Title <span style="font-weight: 400; color: var(--color-text-light);">(optional)</span></label>
+            <input type="text" id="form-role" placeholder="e.g. Geriatrician, NP, Medical Director" style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--color-border); border-radius: 6px; font-family: var(--font-body); font-size: 0.95rem; background: white; color: var(--color-text); outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--color-accent)'" onblur="this.style.borderColor='var(--color-border)'" />
+          </div>
+          <button onclick="submitForm()" class="btn-primary" style="width: 100%; justify-content: center; font-size: 1rem; padding: 1rem 2rem;">Join the waitlist</button>
+          <p style="text-align: center; font-size: 0.8rem; color: var(--color-text-light); margin-top: 0.75rem;">We'll reach out to learn more about how you work.</p>
+        </div>
+        <div id="waitlist-success" style="display: none; text-align: center; padding: 2rem 0;">
+          <div style="width: 56px; height: 56px; background: var(--color-accent-subtle); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <h3 style="font-family: var(--font-display); font-size: 1.5rem; margin-bottom: 0.5rem;">You're on the list.</h3>
+          <p style="color: var(--color-text-secondary);">We'll be in touch soon.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-            if (!name || !email) { alert('Please fill in your name and email.'); return; }
-            if (!email.includes('@') || !email.includes('.')) { alert('Please enter a valid email address.'); return; }
+  <footer>
+    <div class="footer-content">
+      <span class="footer-logo">ronda<span>.health</span></span>
+      <p style="font-size: 0.9rem; color: var(--color-text-secondary);">Interested in partnering or investing? <a href="mailto:tim@ronda.health" style="color: var(--color-accent); text-decoration: underline;">Get in touch</a></p>
+      <span class="footer-text">© 2026 Ronda Health</span>
+    </div>
+  </footer>
 
-            const btn = document.querySelector('#waitlist-form button');
-            btn.textContent = 'Submitting...';
-            btn.disabled = true;
-            btn.style.opacity = '0.7';
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+    }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
-            fetch('https://api.web3forms.com/submit', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                body: JSON.stringify({
-                    access_key: '6462a3c1-de86-4f2d-bbb9-88ca4c776c28',
-                    name, email,
-                    phone: phone || 'Not provided',
-                    role: role || 'Not provided',
-                    subject: 'New Ronda waitlist signup: ' + name,
-                    from_name: 'Ronda Waitlist'
-                })
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (data.success) {
-                    document.getElementById('waitlist-form').style.display = 'none';
-                    document.getElementById('waitlist-success').style.display = 'block';
-                } else throw new Error('Failed');
-            })
-            .catch(() => {
-                btn.textContent = 'Join the waitlist';
-                btn.disabled = false;
-                btn.style.opacity = '1';
-                alert('Something went wrong. Please try again or email tim@ronda.health directly.');
-            });
-        }
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
 
-        document.querySelectorAll('#waitlist-form input').forEach(input => {
-            input.addEventListener('keypress', function(e) { if (e.key === 'Enter') submitForm(); });
-        });
-    </script>
+    function toggleAcc(id) { document.getElementById(id).classList.toggle('open'); }
 
+    function submitForm() {
+      const name = document.getElementById('form-name').value.trim();
+      const email = document.getElementById('form-email').value.trim();
+      const phone = document.getElementById('form-phone').value.trim();
+      const role = document.getElementById('form-role').value.trim();
+      if (!name || !email) { alert('Please fill in your name and email.'); return; }
+      if (!email.includes('@') || !email.includes('.')) { alert('Please enter a valid email address.'); return; }
+      const btn = document.querySelector('#waitlist-form button');
+      btn.textContent = 'Submitting...';
+      btn.disabled = true;
+      btn.style.opacity = '0.7';
+      fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          access_key: '6462a3c1-de86-4f2d-bbb9-88ca4c776c28',
+          name, email,
+          phone: phone || 'Not provided',
+          role: role || 'Not provided',
+          subject: 'New Ronda waitlist signup: ' + name,
+          from_name: 'Ronda Waitlist'
+        })
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (data.success) {
+          document.getElementById('waitlist-form').style.display = 'none';
+          document.getElementById('waitlist-success').style.display = 'block';
+        } else throw new Error('Failed');
+      })
+      .catch(() => {
+        btn.textContent = 'Join the waitlist';
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        alert('Something went wrong. Please try again or email tim@ronda.health directly.');
+      });
+    }
+    document.querySelectorAll('#waitlist-form input').forEach(input => {
+      input.addEventListener('keypress', function(e) { if (e.key === 'Enter') submitForm(); });
+    });
+  </script>
 </body>
 </html>
